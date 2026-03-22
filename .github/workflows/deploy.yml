@@ -3,14 +3,10 @@ name: CI
 on:
   push:
     branches: ["main"]
-  pull_request:
 
 jobs:
   build-test:
     runs-on: ubuntu-latest
-
-    env:
-      MPLBACKEND: Agg
 
     steps:
       - name: Checkout code
@@ -19,12 +15,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install dependencies (FORCE CLEAN INSTALL)
         run: |
           python -m pip install --upgrade pip
           python -m pip install pandas numpy matplotlib seaborn
+
+      - name: Check installed packages (DEBUG)
+        run: |
+          python -m pip list
+
+      - name: Test import (VERY IMPORTANT)
+        run: |
+          python -c "import pandas; import matplotlib; import seaborn; print('Imports OK')"
 
       - name: Run analysis script
         run: |
